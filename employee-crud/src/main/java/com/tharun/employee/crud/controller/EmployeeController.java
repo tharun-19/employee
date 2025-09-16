@@ -2,6 +2,7 @@ package com.tharun.employee.crud.controller;
 
 import com.tharun.employee.crud.model.Employee;
 import com.tharun.employee.crud.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +30,12 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
+    public Employee createEmployee(@Valid @RequestBody Employee employee) {
         return service.createEmployee(employee);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+    public Employee updateEmployee(@PathVariable Long id,@Valid @RequestBody Employee employee) {
         return service.updateEmployee(id, employee);
     }
 
