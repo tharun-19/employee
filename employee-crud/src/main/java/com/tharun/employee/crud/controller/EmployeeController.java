@@ -31,6 +31,7 @@ public class EmployeeController {
 
     @PostMapping
     public Employee createEmployee(@Valid @RequestBody Employee employee) {
+
         return service.createEmployee(employee);
     }
 
@@ -45,8 +46,13 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<List<Employee>> deleteEmployee(@PathVariable Long id) {
         service.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+        List<Employee> remainingEmployees = service.getAllEmployees();
+
+        return ResponseEntity
+                .ok()
+                .body(remainingEmployees);
     }
+
 }

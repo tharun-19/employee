@@ -30,7 +30,6 @@ public class EmployeeService {
         return repository.save(employee);
     }
 
-
     public Employee patchEmployee(Long id, Employee employee) {
         return repository.findById(id).map(existing -> {
             if (employee.getFirstName() != null) existing.setFirstName(employee.getFirstName());
@@ -40,8 +39,6 @@ public class EmployeeService {
             return repository.save(existing);
         }).orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
     }
-
-
 
     public Employee updateEmployee(Long id, Employee updatedEmployee) {
         return repository.findById(id)
