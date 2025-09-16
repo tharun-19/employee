@@ -1,5 +1,6 @@
 package com.tharun.employee.crud.service;
 
+import com.tharun.employee.crud.exception.ResourceNotFoundException;
 import com.tharun.employee.crud.model.Employee;
 import com.tharun.employee.crud.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -20,23 +21,15 @@ public class EmployeeService {
         return repository.findAll();
     }
 
-    public Optional<Employee> getEmployeeById(Long id) {
-        return repository.findById(id);
+    public Employee getEmployeeById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
     }
 
     public Employee createEmployee(Employee employee) {
         return repository.save(employee);
     }
 
-    public Employee updateEmployee(Long id, Employee employee) {
-        return repository.findById(id).map(existing -> {
-            existing.setFirstName(employee.getFirstName());
-            existing.setLastName(employee.getLastName());
-            existing.setEmail(employee.getEmail());
-            existing.setDepartment(employee.getDepartment());
-            return repository.save(existing);
-        }).orElseThrow(() -> new RuntimeException("Employee not found with id " + id));
-    }
 
     public Employee patchEmployee(Long id, Employee employee) {
         return repository.findById(id).map(existing -> {
@@ -45,10 +38,27 @@ public class EmployeeService {
             if (employee.getEmail() != null) existing.setEmail(employee.getEmail());
             if (employee.getDepartment() != null) existing.setDepartment(employee.getDepartment());
             return repository.save(existing);
-        }).orElseThrow(() -> new RuntimeException("Employee not found with id " + id));
+        }).orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+    }
+
+
+
+    public Employee updateEmployee(Long id, Employee updatedEmployee) {
+        return repository.findById(id)
+                .map(employee -> {
+                    employee.setFirstName(updatedEmployee.getFirstName());
+                    employee.setLastName(updatedEmployee.getLastName());
+                    employee.setEmail(updatedEmployee.getEmail());
+                    employee.setDepartment(updatedEmployee.getDepartment());
+                    return repository.save(employee);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
     }
 
     public void deleteEmployee(Long id) {
-        repository.deleteById(id);
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        repository.delete(employee);
     }
+
 }
