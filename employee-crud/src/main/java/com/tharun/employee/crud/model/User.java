@@ -1,6 +1,9 @@
 package com.tharun.employee.crud.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Set;
 
 @Entity
@@ -11,14 +14,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Username is required")
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    @NotNull(message = "Role is required")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     // getters and setters
     public Long getId() { return id; }
@@ -30,6 +36,14 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public Set<String> getRoles() { return roles; }
-    public void setRoles(Set<String> roles) { this.roles = roles; }
+//    public Set<String> getRoles() { return roles; }
+//    public void setRoles(Set<String> roles) { this.roles = roles; }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

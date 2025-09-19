@@ -1,5 +1,6 @@
 package com.tharun.employee.crud.security;
 
+import com.tharun.employee.crud.model.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ public class JwtService {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    public String generateToken(String username, Set<String> roles) {
+    public String generateToken(String username, Role role) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles.stream().collect(Collectors.joining(",")))
+                .claim("roles", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -32,10 +33,6 @@ public class JwtService {
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String extractRoles(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().get("roles", String.class);
-    }
 
     public boolean validateToken(String token) {
         try {
@@ -45,4 +42,11 @@ public class JwtService {
             return false;
         }
     }
+
+    //    public String extractRoles(String token) {
+//        return Jwts.parserBuilder().setSigningKey(key).build()
+//                .parseClaimsJws(token).getBody().get("roles", String.class);
+//    }
+
+
 }

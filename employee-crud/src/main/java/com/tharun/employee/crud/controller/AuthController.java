@@ -1,7 +1,6 @@
 package com.tharun.employee.crud.controller;
 
 import com.tharun.employee.crud.dto.LoginRequest;
-import com.tharun.employee.crud.dto.AuthResponse;
 import com.tharun.employee.crud.dto.RegisterRequest;
 import com.tharun.employee.crud.model.User;
 import com.tharun.employee.crud.repository.UserRepository;
@@ -37,7 +36,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRoles(Set.of("ROLE_ADMIN")); // you can change ROLE_USER if needed
+        user.setRole(request.getRole());
         userRepository.save(user);
         return "User registered successfully!";
     }
@@ -51,7 +50,7 @@ public class AuthController {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtService.generateToken(user.getUsername(), user.getRoles());
+        String token = jwtService.generateToken(user.getUsername(), user.getRole());
         System.out.println("Generated JWT: " + token);
 
         Map<String, Object> response = new HashMap<>();

@@ -16,3 +16,17 @@ spring:
   h2:
     console:
       enabled: true
+
+management:
+  health:
+    ssl:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
